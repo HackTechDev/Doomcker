@@ -1,11 +1,10 @@
 .PHONY: build run
 
 # Default values for variables
-REPO  ?= dorowu/ubuntu-desktop-lxde-vnc
+REPO  ?= nekrofage/doomcker
 TAG   ?= latest
 # you can choose other base image versions
 IMAGE ?= ubuntu:20.04
-# IMAGE ?= nvidia/cuda:10.1-cudnn7-devel-ubuntu18.04
 # choose from supported flavors (see available ones in ./flavors/*.yml)
 FLAVOR ?= lxde
 # armhf or amd64
@@ -24,19 +23,18 @@ run:
 	docker run --privileged --rm \
 		-p 6080:80 -p 6081:443 \
 		-v ${PWD}:/src:ro \
-		-e USER=doro -e PASSWORD=mypassword \
+		-e USER=util01 -e PASSWORD=util01 \
 		-e ALSADEV=hw:2,0 \
 		-e SSL_PORT=443 \
 		-e RELATIVE_URL_ROOT=approot \
-		-e OPENBOX_ARGS="--startup /usr/bin/galculator" \
 		-v ${PWD}/ssl:/etc/nginx/ssl \
 		--device /dev/snd \
-		--name ubuntu-desktop-lxde-test \
+		--name doomcker \
 		$(REPO):$(TAG)
 
 # Connect inside the running container for debugging
 shell:
-	docker exec -it ubuntu-desktop-lxde-test bash
+	docker exec -it doomcker bash
 
 # Generate the SSL/TLS config for HTTPS
 gen-ssl:
@@ -50,12 +48,3 @@ clean:
 extra-clean:
 	docker rmi $(REPO):$(TAG)
 	docker image prune -f
-
-# Run jinja2cli to parse Jinja template applying rules defined in the flavors definitions
-%: %.j2 flavors/$(FLAVOR).yml
-	docker run -v $(shell pwd):/data vikingco/jinja2cli \
-		-D flavor=$(FLAVOR) \
-		-D image=$(IMAGE) \
-		-D localbuild=$(LOCALBUILD) \
-		-D arch=$(ARCH) \
-		$< flavors/$(FLAVOR).yml > $@ || rm $@
