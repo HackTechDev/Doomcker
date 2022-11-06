@@ -27,7 +27,7 @@ RUN apt update \
 RUN apt update \
     && apt install -y --no-install-recommends --allow-unauthenticated \
         xvfb x11vnc \
-        vim-tiny firefox ttf-ubuntu-font-family \
+        unzip firefox meld vim mc htop screen libnspr4 libnss3 wget xdg-utils fonts-liberation\
     && apt autoclean -y \
     && apt autoremove -y \
     && rm -rf /var/lib/apt/lists/*
@@ -47,9 +47,52 @@ RUN apt update \
     && apt autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
+#### GAME
 
-# Additional packages require ~600MB
-# libreoffice  pinta language-pack-zh-hant language-pack-gnome-zh-hant firefox-locale-zh-hant libreoffice-l10n-zh-tw
+# 
+RUN mkdir -p /app/util01/config/zandronum
+
+
+# Freedoom installation
+RUN wget https://github.com/freedoom/freedoom/releases/download/v0.12.1/freedoom-0.12.1.zip \
+    && unzip freedoom-0.12.1.zip \
+    && rm freedoom-0.12.1.zip \
+    && cp freedoom-0.12.1/freedoom2.wad /app/util01/config/zandronum \
+    && rm freedoom-0.12.1 -rf
+
+# Set up Zandronum
+COPY conf/zandronum.ini /app/util01/config/zandronum/
+COPY conf/initUtil01.sh /app/util01/
+COPY scripts/* /tmp/
+RUN /tmp/install_zandronum.sh
+
+# Slade editor installation
+RUN wget -O- http://debian.drdteam.org/drdteam.gpg | apt-key add -    
+RUN apt-add-repository 'deb http://debian.drdteam.org/ stable multiverse'
+RUN apt-get update 
+RUN apt-get install -y slade
+
+# Eureka editor installation
+RUN apt-get install -y eureka 
+
+# Office applications
+RUN apt-get install -y gedit gnumeric abiword gimp
+
+# Game applications
+RUN apt-get install -y slashem-sdl cataclysm-dda-sdl crossfire-client crossfire-server crossfire-maps crossfire-client-images crossfire-common minetest minetest-data minetest-server minetestmapper python3-minecraftpi
+
+# Quake
+RUN apt-get install -y darkplaces darkplaces-server quake 
+RUN wget https://github.com/TrenchBroom/TrenchBroom/releases/download/v2022.1/TrenchBroom-Linux-v2022.1-Release.x86_64.deb
+RUN dpkg -i TrenchBroom-Linux-v2022.1-Release.x86_64.deb
+
+RUN mkdir -p /app/util01/quake/id1
+COPY quake/id1.tar.gz app/util01/quake/
+RUN tar xvfz /app/util01/quake/id1.tar.gz -C /app/util01/quake/
+COPY quake/*.sh app/util01/quake/ 
+
+####
+
 
 # tini to fix subreap
 ARG TINI_VERSION=v0.18.0
