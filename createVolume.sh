@@ -1,4 +1,4 @@
 #!/bin/sh
 
-docker volume create users
+docker volume create util01
 docker volume ls

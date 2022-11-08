@@ -22,7 +22,7 @@ build: $(templates)
 run:
 	docker run --privileged --rm \
 		-p 6080:80 -p 6081:443 \
-		-v users,target=/users/util01 \
+		-v util01:/users/util01:rw \
 		-e USER=util01 -e PASSWORD=util01 \
 		-e ALSADEV=hw:2,0 \
 		-e SSL_PORT=443 \
