@@ -1,5 +1,5 @@
 #!/bin/sh
 
-sudo docker rm -f $(docker ps -a -q)
-sudo docker rmi -f $(docker images -q)
-sudo docker volume rm $(docker volume ls -qf dangling=true)
+sudo podman rm -f $(podman ps -a -q)
+sudo podman rmi -f $(podman images -q)
+sudo podman volume rm $(podman volume ls -qf dangling=true)

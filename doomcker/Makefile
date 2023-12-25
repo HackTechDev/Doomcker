@@ -15,14 +15,14 @@ templates = Dockerfile rootfs/etc/supervisor/conf.d/supervisord.conf
 
 # Rebuild the container image
 build: $(templates)
-	docker build -t $(REPO):$(TAG) .
+	podman build -t $(REPO):$(TAG) .
 
 # Test run the container
 # the local dir will be mounted under /src read-only
 run:
-	docker run --privileged --rm \
+	podman run --privileged --rm \
 		-p 6080:80 -p 6081:443 \
-		--mount source=util01,destination=/users/util01 \
+		--mount type=bind,source=/home/util01,destination=/users/util01 \
 		-e USER=util01 -e PASSWORD=util01 \
 		-e ALSADEV=hw:2,0 \
 		-e SSL_PORT=443 \
@@ -34,7 +34,7 @@ run:
 
 # Connect inside the running container for debugging
 shell:
-	docker exec -it doomcker bash
+	podman exec -it doomcker bash
 
 # Generate the SSL/TLS config for HTTPS
 gen-ssl:
@@ -46,5 +46,5 @@ clean:
 	rm -f $(templates)
 
 extra-clean:
-	docker rmi $(REPO):$(TAG)
-	docker image prune -f
+	podman rmi $(REPO):$(TAG)
+	podman image prune -f

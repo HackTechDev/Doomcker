@@ -1,4 +1,4 @@
 #!/bin/sh
 
-docker volume create util01
-docker volume ls
+podman volume create util01
+podman volume ls
