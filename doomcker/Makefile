@@ -22,7 +22,7 @@ build: $(templates)
 run:
 	podman run --privileged --rm \
 		-p 6080:80 -p 6081:443 \
-		--mount type=bind,source=/home/util01,destination=/users/util01 \
+		-v util01:/home/util01 \
 		-e USER=util01 -e PASSWORD=util01 \
 		-e ALSADEV=hw:2,0 \
 		-e SSL_PORT=443 \
