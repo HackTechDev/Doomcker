@@ -6,10 +6,7 @@
 
 FROM ubuntu:20.04 as system
 
-
-
 RUN sed -i 's#http://archive.ubuntu.com/ubuntu/#mirror://mirrors.ubuntu.com/mirrors.txt#' /etc/apt/sources.list;
-
 
 # built-in packages
 ENV DEBIAN_FRONTEND noninteractive
@@ -49,22 +46,20 @@ RUN apt update \
 
 #### GAME
 
-# 
-RUN mkdir -p /app/util01/config/zandronum
-
-
 # Freedoom installation
+RUN mkdir -p /app/util01/jeux/zandronum
+
 RUN wget https://github.com/freedoom/freedoom/releases/download/v0.12.1/freedoom-0.12.1.zip \
     && unzip freedoom-0.12.1.zip \
     && rm freedoom-0.12.1.zip \
-    && cp freedoom-0.12.1/freedoom2.wad /app/util01/config/zandronum \
+    && cp freedoom-0.12.1/freedoom2.wad /app/util01/jeux/zandronum/ \
     && rm freedoom-0.12.1 -rf
 
 # Set up Zandronum
-COPY conf/zandronum.ini /app/util01/config/zandronum/
-COPY conf/initUtil01.sh /app/util01/
-COPY scripts/* /tmp/
-RUN /tmp/install_zandronum.sh
+COPY conf/zandronum/zandronum.ini /app/util01/jeux/zandronum/
+COPY conf/zandronum/postinstall_zandronum.sh /app/util01/jeux/zandronum/
+COPY conf/zandronum/install_zandronum.sh /app/util01/jeux/zandronum/
+RUN /app/util01/jeux/zandronum/install_zandronum.sh
 
 # Slade editor installation
 RUN wget -O- http://debian.drdteam.org/drdteam.gpg | apt-key add -    
@@ -86,10 +81,10 @@ RUN apt-get install -y darkplaces darkplaces-server quake
 RUN wget https://github.com/TrenchBroom/TrenchBroom/releases/download/v2022.1/TrenchBroom-Linux-v2022.1-Release.x86_64.deb
 RUN dpkg -i TrenchBroom-Linux-v2022.1-Release.x86_64.deb
 
-RUN mkdir -p /app/util01/quake/id1
-COPY quake/id1.tar.gz app/util01/quake/
-RUN tar xvfz /app/util01/quake/id1.tar.gz -C /app/util01/quake/
-COPY quake/*.sh app/util01/quake/ 
+RUN mkdir -p /app/util01/jeux/quake/id1
+COPY conf/quake/id1.tar.gz app/util01/jeux/quake/
+RUN tar xvfz /app/util01/jeux/quake/id1.tar.gz -C /app/util01/jeux/quake/
+COPY conf/quake/*.sh app/util01/jeux/quake/ 
 
 ####
 
