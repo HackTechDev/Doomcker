@@ -47,6 +47,12 @@ RUN apt update \
 
 #### GAME
 
+# Office applications
+RUN apt-get update \
+    && apt-get install -y gedit gnumeric abiword gimp \
+    && apt-get autoclean -y \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
 
 ####
 
