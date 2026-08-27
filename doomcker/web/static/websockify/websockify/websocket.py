@@ -711,7 +711,7 @@ class WebSocket(object):
                 mask = numpy.frombuffer(mask, dtype, count=1)
                 data = numpy.frombuffer(buf, dtype, count=int(plen / 4))
                 #b = numpy.bitwise_xor(data, mask).data
-                b = numpy.bitwise_xor(data, mask).tostring()
+                b = numpy.bitwise_xor(data, mask).tobytes()
 
             if plen % 4:
                 dtype=numpy.dtype('B')
@@ -720,17 +720,17 @@ class WebSocket(object):
                 mask = numpy.frombuffer(mask, dtype, count=(plen % 4))
                 data = numpy.frombuffer(buf, dtype,
                         offset=plen - (plen % 4), count=(plen % 4))
-                c = numpy.bitwise_xor(data, mask).tostring()
+                c = numpy.bitwise_xor(data, mask).tobytes()
             return b + c
         else:
             # Slower fallback
             if sys.hexversion < 0x3000000:
                 mask = [ ord(c) for c in mask ]
             data = array.array('B')
-            data.fromstring(buf)
+            data.frombytes(buf)
             for i in range(len(data)):
                 data[i] ^= mask[i % 4]
-            return data.tostring()
+            return data.tobytes()
 
     def _encode_hybi(self, opcode, buf, mask_key=None, fin=True):
         """ Encode a HyBi style WebSocket frame.
