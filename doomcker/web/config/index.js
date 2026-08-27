@@ -36,7 +36,9 @@ module.exports = {
     // Use Eslint Loader?
     // If true, your code will be linted during bundling and
     // linting errors and warnings will be shown in the console.
-    useEslint: true,
+    // Disabled: eslint-loader is unmaintained and incompatible with webpack 5.
+    // Use `npm run lint` instead.
+    useEslint: false,
     // If true, eslint errors and warnings will also be shown in the error overlay
     // in the browser.
     showEslintErrorsInOverlay: false,
@@ -46,7 +48,7 @@ module.exports = {
      */
 
     // https://webpack.js.org/configuration/devtool/#development
-    devtool: 'cheap-module-eval-source-map',
+    devtool: 'eval-cheap-module-source-map',
 
     // If you have problems debugging vue-files in devtools,
     // set this to false - it *may* help
@@ -71,7 +73,7 @@ module.exports = {
 
     productionSourceMap: true,
     // https://webpack.js.org/configuration/devtool/#production
-    devtool: '#source-map',
+    devtool: 'source-map',
 
     // Gzip off by default as many popular static hosts such as
     // Surge or Netlify already gzip all static assets for you.

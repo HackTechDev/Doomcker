@@ -1,10 +1,10 @@
-# Built with arch: amd64 flavor: lxde image: ubuntu:20.04
+# Built with arch: amd64 flavor: lxde image: ubuntu:26.04
 #
 ################################################################################
 # base system
 ################################################################################
 
-FROM ubuntu:20.04 as system
+FROM ubuntu:26.04 as system
 
 RUN sed -i 's#http://archive.ubuntu.com/ubuntu/#mirror://mirrors.ubuntu.com/mirrors.txt#' /etc/apt/sources.list;
 
@@ -30,61 +30,23 @@ RUN apt update \
     && rm -rf /var/lib/apt/lists/*
 
 RUN apt update \
-    && apt install -y gpg-agent \
+    && apt install -y gpg-agent gnupg \
+    && curl -sSL https://dl.google.com/linux/linux_signing_key.pub | gpg --no-tty --batch --yes --dearmor -o /usr/share/keyrings/google-chrome.gpg \
+    && echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main' > /etc/apt/sources.list.d/google-chrome.list \
     && curl -LO https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
     && (dpkg -i ./google-chrome-stable_current_amd64.deb || apt-get install -fy) \
-    && curl -sSL https://dl.google.com/linux/linux_signing_key.pub | apt-key add \
     && rm google-chrome-stable_current_amd64.deb \
     && rm -rf /var/lib/apt/lists/*
 
 RUN apt update \
     && apt install -y --no-install-recommends --allow-unauthenticated \
-        lxde gtk2-engines-murrine gnome-themes-standard gtk2-engines-pixbuf gtk2-engines-murrine arc-theme \
+        lxde gtk2-engines-murrine gnome-themes-extra gtk2-engines-pixbuf gtk2-engines-murrine arc-theme \
     && apt autoclean -y \
     && apt autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
 #### GAME
 
-# Freedoom installation
-RUN mkdir -p /app/util01/jeux/zandronum
-
-RUN wget https://github.com/freedoom/freedoom/releases/download/v0.12.1/freedoom-0.12.1.zip \
-    && unzip freedoom-0.12.1.zip \
-    && rm freedoom-0.12.1.zip \
-    && cp freedoom-0.12.1/freedoom2.wad /app/util01/jeux/zandronum/ \
-    && rm freedoom-0.12.1 -rf
-
-# Set up Zandronum
-COPY conf/zandronum/zandronum.ini /app/util01/jeux/zandronum/
-COPY conf/zandronum/postinstall_zandronum.sh /app/util01/jeux/zandronum/
-COPY conf/zandronum/install_zandronum.sh /app/util01/jeux/zandronum/
-RUN /app/util01/jeux/zandronum/install_zandronum.sh
-
-# Slade editor installation
-RUN wget -O- http://debian.drdteam.org/drdteam.gpg | apt-key add -    
-RUN apt-add-repository 'deb http://debian.drdteam.org/ stable multiverse'
-RUN apt-get update 
-RUN apt-get install -y slade
-
-# Eureka editor installation
-RUN apt-get install -y eureka 
-
-# Office applications
-RUN apt-get install -y gedit gnumeric abiword gimp
-
-# Game applications
-RUN apt-get install -y slashem-sdl cataclysm-dda-sdl crossfire-client crossfire-server crossfire-maps crossfire-client-images crossfire-common minetest minetest-data minetest-server minetestmapper python3-minecraftpi
-
-# Quake
-RUN apt-get install -y darkplaces darkplaces-server quake 
-RUN wget https://github.com/TrenchBroom/TrenchBroom/releases/download/v2022.1/TrenchBroom-Linux-v2022.1-Release.x86_64.deb
-RUN dpkg -i TrenchBroom-Linux-v2022.1-Release.x86_64.deb
-
-RUN mkdir -p /app/util01/jeux/quake/id1
-COPY conf/quake/id1.tar.gz app/util01/jeux/quake/
-RUN tar xvfz /app/util01/jeux/quake/id1.tar.gz -C /app/util01/jeux/quake/
-COPY conf/quake/*.sh app/util01/jeux/quake/ 
 
 ####
 
@@ -99,7 +61,7 @@ COPY rootfs/usr/local/lib/web/backend/requirements.txt /tmp/
 RUN apt-get update \
     && dpkg-query -W -f='${Package}\n' > /tmp/a.txt \
     && apt-get install -y python3-pip python3-dev build-essential \
-	&& pip3 install setuptools wheel && pip3 install -r /tmp/requirements.txt \
+	&& pip3 install --break-system-packages setuptools wheel && pip3 install --break-system-packages -r /tmp/requirements.txt \
     && ln -s /usr/bin/python3 /usr/local/bin/python \
     && dpkg-query -W -f='${Package}\n' > /tmp/b.txt \
     && apt-get remove -y `diff --changed-group-format='%>' --unchanged-group-format='' /tmp/a.txt /tmp/b.txt | xargs` \
@@ -112,7 +74,7 @@ RUN apt-get update \
 ################################################################################
 # builder
 ################################################################################
-FROM ubuntu:20.04 as builder
+FROM ubuntu:26.04 as builder
 
 
 RUN sed -i 's#http://archive.ubuntu.com/ubuntu/#mirror://mirrors.ubuntu.com/mirrors.txt#' /etc/apt/sources.list;
@@ -122,12 +84,12 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends curl ca-certificates gnupg patch
 
 # nodejs
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - \
+RUN curl -sL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs
 
 # yarn
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
-    && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --no-tty --batch --yes --dearmor -o /usr/share/keyrings/yarn.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/yarn.gpg] https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
     && apt-get update \
     && apt-get install -y yarn
 
