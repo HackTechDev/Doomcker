@@ -15,6 +15,19 @@ as taken from http://docs.python.org/dev/library/ssl.html#certificates
 import os, sys, time, errno, signal, socket, select, logging
 import multiprocessing
 
+if sys.platform != 'win32':
+    # Force the traditional 'fork' start method. Child handler processes
+    # here are expected to inherit the already-open listening socket and
+    # jump straight into top_new_client(); 'forkserver'/'spawn' instead
+    # re-import and re-run the entrypoint script in the child, which
+    # re-executes websockify_init() and crashes trying to re-bind the
+    # port. Python's default start method on Linux changed away from
+    # 'fork' in 3.14, so it must be requested explicitly.
+    try:
+        multiprocessing.set_start_method('fork')
+    except RuntimeError:
+        pass
+
 # Imports that vary by python version
 
 # python 3.0 differences
