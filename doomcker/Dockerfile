@@ -47,6 +47,16 @@ RUN apt update \
 
 #### GAME
 
+# Slash'EM, Cataclysm-DDA, Crossfire, Luanti
+RUN apt-get update \
+    && apt-get install -y \
+        slashem-sdl cataclysm-dda-sdl \
+        crossfire-client crossfire-server crossfire-maps crossfire-client-images crossfire-common \
+        luanti luanti-data luanti-server luanti-game-minetest \
+    && apt-get autoclean -y \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
+
 # Office applications
 RUN apt-get update \
     && apt-get install -y gedit gnumeric abiword gimp \
