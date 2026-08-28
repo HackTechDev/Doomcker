@@ -15,6 +15,8 @@ chemin complet.
 | Crossfire serveur | `/usr/sbin/crossfire-server` |
 | Luanti (client) | `/usr/games/luanti` (alias `/usr/games/minetest`) |
 | Luanti serveur | `/usr/games/luantiserver` (alias `minetestserver`) |
+| Quake (client Darkplaces) | `/usr/games/darkplaces` |
+| Quake (serveur Darkplaces) | `/usr/games/darkplaces-server` |
 | gedit / gnumeric / abiword | `/usr/bin/gedit`, `/usr/bin/gnumeric`, `/usr/bin/abiword` |
 | GIMP | `/usr/bin/gimp` |
 

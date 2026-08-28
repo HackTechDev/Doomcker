@@ -61,3 +61,8 @@ Reprise de la réinstallation des jeux dans la section `#### GAME` du Dockerfile
 - **Bonus involontaire** : `freedoom` recommande `dsda-doom | doom-engine` (Recommends, installés par défaut car aucun `--no-install-recommends` sur ce bloc) → `dsda-doom` (source port Doom axé speedrun/démos) est donc installé automatiquement comme moteur.
 - **Zandronum non ajouté** : confirmé absent de tous les dépôts Ubuntu 26.04 (`E: Unable to locate package`, main/universe/multiverse), comme `slade`/`gzdoom`/`trenchbroom`. Reporté à une session dédiée aux paquets hors-apt (PPA, AppImage, ou build depuis les sources).
 - **Validation** : build réel du stage `system`, build complet 3 stages, arrêt/relance du conteneur, vérification post-redémarrage : services supervisord `RUNNING`, `/api/health` → 200, `freedoom`/`eureka`/`dsda-doom` confirmés installés (`dpkg -l`).
+
+### 19:13 — `[Add] Darkplaces (client + serveur) pour Quake` (commit `6f3a77d`)
+
+- **Ajoutés** : `darkplaces` (client) et `darkplaces-server`, tous deux disponibles en `universe` sur Ubuntu 26.04 — binaires `/usr/games/darkplaces` et `/usr/games/darkplaces-server`.
+- **Validation** : build réel du stage `system`, build complet 3 stages, arrêt/relance du conteneur, vérification post-redémarrage : services supervisord `RUNNING`, `/api/health` → 200, `darkplaces`/`darkplaces-server` confirmés installés (`dpkg -l` + binaires présents).
