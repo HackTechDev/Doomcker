@@ -57,6 +57,13 @@ RUN apt-get update \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
+# Freedoom, Eureka (Zandronum n'est pas empaqueté pour Ubuntu 26.04, cf. UPDATE.md)
+RUN apt-get update \
+    && apt-get install -y freedoom eureka \
+    && apt-get autoclean -y \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
+
 # Office applications
 RUN apt-get update \
     && apt-get install -y gedit gnumeric abiword gimp \
