@@ -18,6 +18,7 @@ chemin complet.
 | Luanti serveur | `/usr/games/luantiserver` (alias `minetestserver`) |
 | Quake (client Darkplaces) | `/usr/games/darkplaces` |
 | Quake (serveur Darkplaces) | `/usr/games/darkplaces-server` |
+| TrenchBroom (éditeur de niveaux Quake) | `/usr/games/trenchbroom` (wrapper vers `/opt/trenchbroom/AppRun`, AppImage extraite) |
 | gedit / gnumeric / abiword | `/usr/bin/gedit`, `/usr/bin/gnumeric`, `/usr/bin/abiword` |
 | GIMP | `/usr/bin/gimp` |
 
