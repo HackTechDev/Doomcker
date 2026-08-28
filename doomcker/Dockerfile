@@ -64,12 +64,22 @@ RUN apt-get update \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
-# Quake (Darkplaces client + serveur)
+# Quake (Darkplaces client + serveur) + LibreQuake (données de jeu libres, équivalent Freedoom)
 RUN apt-get update \
     && apt-get install -y darkplaces darkplaces-server \
     && apt-get autoclean -y \
     && apt-get autoremove -y \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && wget -q https://github.com/lavenderdotpet/LibreQuake/releases/download/v0.09-beta/full.zip -O /tmp/librequake.zip \
+    && unzip -q /tmp/librequake.zip -d /tmp \
+    && mkdir -p /opt/quake \
+    && mv /tmp/full/id1 /opt/quake/id1 \
+    && rm -rf /tmp/librequake.zip /tmp/full \
+    && mv /usr/games/darkplaces /usr/games/darkplaces-bin \
+    && mv /usr/games/darkplaces-server /usr/games/darkplaces-server-bin \
+    && printf '#!/bin/bash\nexec /usr/games/darkplaces-bin -basedir /opt/quake "$@"\n' > /usr/games/darkplaces \
+    && printf '#!/bin/bash\nexec /usr/games/darkplaces-server-bin -basedir /opt/quake "$@"\n' > /usr/games/darkplaces-server \
+    && chmod +x /usr/games/darkplaces /usr/games/darkplaces-server
 
 # Slade (dépôt tiers DRD Team — pas dans les dépôts Ubuntu)
 RUN wget -O- http://debian.drdteam.org/drdteam.gpg | gpg --no-tty --batch --yes --dearmor -o /usr/share/keyrings/drdteam.gpg \
