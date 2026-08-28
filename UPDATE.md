@@ -66,3 +66,10 @@ Reprise de la réinstallation des jeux dans la section `#### GAME` du Dockerfile
 
 - **Ajoutés** : `darkplaces` (client) et `darkplaces-server`, tous deux disponibles en `universe` sur Ubuntu 26.04 — binaires `/usr/games/darkplaces` et `/usr/games/darkplaces-server`.
 - **Validation** : build réel du stage `system`, build complet 3 stages, arrêt/relance du conteneur, vérification post-redémarrage : services supervisord `RUNNING`, `/api/health` → 200, `darkplaces`/`darkplaces-server` confirmés installés (`dpkg -l` + binaires présents).
+
+### 19:39 — `[Add] Slade (éditeur de ressources Doom) via dépôt tiers DRD Team` (commit `aba7edc`)
+
+- **Contexte** : `slade` n'existe dans aucun dépôt Ubuntu (confirmé le 2026-08-28, `E: Unable to locate package`). `doomcker/Dockerfile.bak` (reliquat pré-migration, non commité) contenait une méthode d'installation via le dépôt tiers `debian.drdteam.org` — vérifiée avant réintégration.
+- **Vérification** : clé GPG (`http://debian.drdteam.org/drdteam.gpg`) valide (signée par le mainteneur SLADE/ZDoom), dépôt `stable multiverse` (format "flat", sans dépendance au codename de distribution → fonctionne tel quel sur Ubuntu 26.04 "resolute"), `apt-get install slade` réussi en conditions réelles (exit 0) dans un conteneur `ubuntu:26.04` jetable.
+- **Ajouté** au Dockerfile : ajout de la clé + du dépôt DRD Team, puis `apt-get install -y slade` — binaire `/usr/bin/slade`.
+- **Validation** : build réel du stage `system`, build complet 3 stages, arrêt/relance du conteneur, vérification post-redémarrage : services supervisord `RUNNING`, `/api/health` → 200, `slade 3.2.12` confirmé installé (`dpkg -l` + `which slade`).

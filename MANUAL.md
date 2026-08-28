@@ -9,6 +9,7 @@ chemin complet.
 | Freedoom (moteur dsda-doom) | `/usr/games/dsda-doom` (+ `dsda-heretic`, `dsda-hexen`) |
 | — WADs Freedoom | `/usr/share/games/doom/freedoom1.wad`, `freedoom2.wad` |
 | Eureka (éditeur Doom) | `/usr/bin/eureka` |
+| Slade (éditeur de ressources Doom) | `/usr/bin/slade` |
 | Slash'EM | `/usr/games/slashem-sdl` |
 | Cataclysm-DDA | `/usr/games/cataclysm-tiles` |
 | Crossfire client | `/usr/games/crossfire-client-gtk2` |
