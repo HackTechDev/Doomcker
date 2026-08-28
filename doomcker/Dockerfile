@@ -80,6 +80,16 @@ RUN wget -O- http://debian.drdteam.org/drdteam.gpg | gpg --no-tty --batch --yes 
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
+# TrenchBroom (éditeur de niveaux Quake, AppImage GitHub releases — pas dans les dépôts Ubuntu)
+RUN wget -q https://github.com/TrenchBroom/TrenchBroom/releases/download/v2026.2/TrenchBroom-Linux-x86_64-v2026.2-Release.zip -O /tmp/trenchbroom.zip \
+    && unzip -q /tmp/trenchbroom.zip -d /tmp \
+    && chmod +x /tmp/TrenchBroom.AppImage \
+    && cd /tmp && ./TrenchBroom.AppImage --appimage-extract >/dev/null \
+    && mv /tmp/squashfs-root /opt/trenchbroom \
+    && printf '#!/bin/bash\nexec /opt/trenchbroom/AppRun "$@"\n' > /usr/games/trenchbroom \
+    && chmod +x /usr/games/trenchbroom \
+    && rm -rf /tmp/trenchbroom.zip /tmp/TrenchBroom.AppImage /tmp/squashfs-root
+
 # Office applications
 RUN apt-get update \
     && apt-get install -y gedit gnumeric abiword gimp \
