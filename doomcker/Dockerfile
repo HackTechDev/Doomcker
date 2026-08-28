@@ -64,6 +64,13 @@ RUN apt-get update \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
+# Quake (Darkplaces client + serveur)
+RUN apt-get update \
+    && apt-get install -y darkplaces darkplaces-server \
+    && apt-get autoclean -y \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
+
 # Office applications
 RUN apt-get update \
     && apt-get install -y gedit gnumeric abiword gimp \
