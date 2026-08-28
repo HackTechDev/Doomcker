@@ -40,3 +40,24 @@ Migration de l'image de base `ubuntu:20.04` → `ubuntu:26.04`, avec modernisati
 Après chaque correctif websockify, l'image `nekrofage/doomcker:latest` a été reconstruite (`./buildDoomckerContainer.sh`) et le conteneur `doomcker` recréé (`./stopDoomckerContainer.sh` puis `make run`) pour intégrer le fix nativement dans l'image, avec vérification systématique post-redémarrage (statut supervisord + handshake VNC réel).
 
 **Résultat final confirmé par l'utilisateur : fonctionnel.**
+
+---
+
+## 2026-08-28
+
+### 18:32 — `[Add] Slash'EM, Cataclysm-DDA, Crossfire, Luanti (Minetest)` (commit `3bb95ac`)
+
+Reprise de la réinstallation des jeux dans la section `#### GAME` du Dockerfile, vidée pendant la migration Ubuntu 26.04.
+
+- **Vérification préalable** de la disponibilité des paquets sur les dépôts Ubuntu 26.04 (`resolute`) via un conteneur `ubuntu:26.04` jetable (`apt-get install --simulate`), avant tout édition du Dockerfile — conformément au principe "valider avant de commit".
+- **Ajoutés** : `slashem-sdl`, `cataclysm-dda-sdl`, `crossfire-client`, `crossfire-server`, `crossfire-maps`, `crossfire-client-images`, `crossfire-common`, `luanti`, `luanti-data`, `luanti-server`, `luanti-game-minetest` — tous présents en `universe`.
+- **Minetest a été renommé "Luanti"** (projet upstream, 2024/2025) : les paquets Ubuntu 26.04 suivent ce renommage (`minetest` existe toujours en alias mais `luanti*` est le nom canonique désormais) ; `luanti-game-minetest` fournit le jeu de base historique (sub-game) pour le moteur Luanti.
+- **Non disponibles en apt** (aucun résultat sur main/universe/multiverse, `E: Unable to locate package`) : `slade`, `gzdoom`, `trenchbroom` — nécessiteront une autre méthode d'installation (PPA tiers, AppImage, ou build depuis les sources). Reporté à une prochaine session.
+- **Validation** : build réel du stage `system` (paquets s'installent sans erreur), puis build complet des 3 stages via `./buildDoomckerContainer.sh`, arrêt/relance du conteneur (`./stopDoomckerContainer.sh` + `./runDoomckerWeb.sh`), vérification post-redémarrage : tous les services supervisord `RUNNING`, `/api/health` → 200, les 11 paquets confirmés installés (`dpkg -l`) dans le conteneur relancé.
+
+### 18:48 — `[Add] Freedoom et Eureka` (commit `8892cca`)
+
+- **Ajoutés** : `freedoom` (WADs Doom libres) et `eureka` (éditeur de niveaux Doom), tous deux disponibles en `universe` sur Ubuntu 26.04.
+- **Bonus involontaire** : `freedoom` recommande `dsda-doom | doom-engine` (Recommends, installés par défaut car aucun `--no-install-recommends` sur ce bloc) → `dsda-doom` (source port Doom axé speedrun/démos) est donc installé automatiquement comme moteur.
+- **Zandronum non ajouté** : confirmé absent de tous les dépôts Ubuntu 26.04 (`E: Unable to locate package`, main/universe/multiverse), comme `slade`/`gzdoom`/`trenchbroom`. Reporté à une session dédiée aux paquets hors-apt (PPA, AppImage, ou build depuis les sources).
+- **Validation** : build réel du stage `system`, build complet 3 stages, arrêt/relance du conteneur, vérification post-redémarrage : services supervisord `RUNNING`, `/api/health` → 200, `freedoom`/`eureka`/`dsda-doom` confirmés installés (`dpkg -l`).
