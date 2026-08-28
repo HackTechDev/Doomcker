@@ -71,6 +71,15 @@ RUN apt-get update \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
+# Slade (dépôt tiers DRD Team — pas dans les dépôts Ubuntu)
+RUN wget -O- http://debian.drdteam.org/drdteam.gpg | gpg --no-tty --batch --yes --dearmor -o /usr/share/keyrings/drdteam.gpg \
+    && echo 'deb [signed-by=/usr/share/keyrings/drdteam.gpg] http://debian.drdteam.org/ stable multiverse' > /etc/apt/sources.list.d/drdteam.list \
+    && apt-get update \
+    && apt-get install -y slade \
+    && apt-get autoclean -y \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
+
 # Office applications
 RUN apt-get update \
     && apt-get install -y gedit gnumeric abiword gimp \
