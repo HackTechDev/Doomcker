@@ -23,3 +23,11 @@ chemin complet.
 
 Note : `dsda-doom` cherchera les WADs Freedoom dans `/usr/share/games/doom/` automatiquement,
 ou via `-iwad /usr/share/games/doom/freedoom2.wad`.
+
+## Fichiers WAD
+
+| WAD | Emplacement |
+|---|---|
+| Freedoom (IWADs) | `/usr/share/games/doom/freedoom1.wad`, `/usr/share/games/doom/freedoom2.wad` |
+| WAD interne dsda-doom (menus/textures moteur) | `/usr/share/dsda-doom/dsda-doom.wad` |
+| Dossier autoload dsda-doom (répertoires vides, prêts pour PWADs additionnels) | `~/.local/share/dsda-doom/autoload/{all-all,freedoom-all,freedoom2.wad}/` |
