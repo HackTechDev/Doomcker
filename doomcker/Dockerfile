@@ -80,6 +80,8 @@ RUN apt-get update \
     && printf '#!/bin/bash\nexec /usr/games/darkplaces-bin -basedir /opt/quake "$@"\n' > /usr/games/darkplaces \
     && printf '#!/bin/bash\nexec /usr/games/darkplaces-server-bin -basedir /opt/quake "$@"\n' > /usr/games/darkplaces-server \
     && chmod +x /usr/games/darkplaces /usr/games/darkplaces-server
+COPY conf/runDarkplaces.sh /usr/games/runDarkplaces.sh
+RUN chmod +x /usr/games/runDarkplaces.sh
 
 # Slade (dépôt tiers DRD Team — pas dans les dépôts Ubuntu)
 RUN wget -O- http://debian.drdteam.org/drdteam.gpg | gpg --no-tty --batch --yes --dearmor -o /usr/share/keyrings/drdteam.gpg \
